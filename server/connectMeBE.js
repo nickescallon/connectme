@@ -56,10 +56,10 @@ var sendResponse = function(res, data, status){
 var serveStatic = function(res, asset) {
   fs.readFile('.' + asset, 'utf8', function(err, data){
     if (err){
-      throw err;
+      sendResponse(res, "404:File not found", 404);
+    }else{
+      sendResponse(res, data);
     }
-    console.log(data);
-    sendResponse(res, data);
   });
 };
 
