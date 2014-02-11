@@ -144,7 +144,7 @@ var h = window.innerHeight;
       nodes.push(temp);
     }
 
-    console.log(nodes);
+    //console.log(nodes);
 
     for (var i=0; i<grads.length; i++){
       nodes.push(grads[i]);
@@ -161,11 +161,11 @@ var h = window.innerHeight;
         links.push(temp);
       }
     }
-    console.log(links);
+    //console.log(links);
     /*----------------------------------------------------------------------------------*/
 
 var force = d3.layout.force()
-    .charge(-300)
+    .charge(-250)
     .linkDistance(30)
     .size([w, h])
     .nodes(nodes)
@@ -228,6 +228,59 @@ node.each(function(d,i){
 // node.on('mouseout', function(d,i){
 //   d3.select(this).transition().attr("r", 10);
 // });
+
+
+node.on('mouseover', function(d,i){
+  if (d.isCompany){
+    var coName = d.name;
+    node.each(function(d,i){
+      if (d.company === coName){
+        d3.select(this).style("fill", "white");
+      }
+    });
+  }
+});
+
+node.on('mouseout', function(d,i){
+  if (d.isCompany && !d.clicked){
+    var coName = d.name;
+    node.each(function(d,i){
+      if (d.company === coName){
+        d3.select(this).style("fill", "black");
+      }
+    });
+  }
+});
+
+//REFACTOR THIS, SOME REPETITION
+node.on('click', function(d,i){
+  //if current node is clicked, unclick it
+  if (d.clicked){
+    node.each(function(d,i){
+      d.clicked = false;
+      if (!d.isCompany){
+        d3.select(this).style("fill", "black");
+      }
+    });
+  }else if (d.isCompany){
+    //when clicking on a company node, deselect all other clicked nodes
+    node.each(function(d,i){
+      d.clicked = false;
+      if (!d.isCompany){
+        d3.select(this).style("fill", "black");
+      }
+    });
+    //set current company node to clicked
+    d.clicked = true;
+    var coName = d.name;
+    //highlight all employees connected to company node
+    node.each(function(d,i){
+      if (d.company === coName){
+        d3.select(this).style("fill", "white");
+      }
+    });
+  }
+});
 
 /*-------------------FORCE POSITIONING--------------------------------*/
 force.on("tick", function() {
