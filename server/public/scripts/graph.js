@@ -172,9 +172,19 @@ var force = d3.layout.force()
     .links(links)
     .start();
 
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    var title = d.isCompany ? "Company" : "Name";
+    return "<strong>"+ title +":</strong> <span style='color:red'>" + d.name + "</span>";
+  });
+
 var svg = d3.select("body").append("svg")
     .attr("width", w)
     .attr("height", h);
+
+svg.call(tip);
 
 var link = svg.selectAll(".link")
     .data(links)
@@ -191,8 +201,11 @@ var node = svg.selectAll(".node")
       .style("stroke", function(d){return d.isCompany ? "none" : "white"})
       .call(force.drag); // enable to make draggable
 
-node.append("title")
-      .text(function(d) { return d.name; });
+// node.append("title")
+//       .text(function(d) { return d.name; });
+
+// node.append("svg:title")
+//    .text(function(d) { return d.name; });
 
 node.each(function(d,i){
   if(d.imgUrl !== undefined){
@@ -214,11 +227,10 @@ node.each(function(d,i){
       .attr("width","16px")
       .attr("xlink:href", d.imgUrl);
 
-    console.log(d.imgUrl);
-
     d3.select(this).style("fill","url(#"+matched+")");
   }
 });
+
 
 
 /*-------------------EVENT LISTENERS----------------------------*/
@@ -231,7 +243,9 @@ node.each(function(d,i){
 
 
 node.on('mouseover', function(d,i){
+  tip.show(d);
   if (d.isCompany){
+
     var coName = d.name;
     node.each(function(d,i){
       if (d.company === coName){
@@ -242,6 +256,7 @@ node.on('mouseover', function(d,i){
 });
 
 node.on('mouseout', function(d,i){
+  tip.hide(d);
   if (d.isCompany && !d.clicked){
     var coName = d.name;
     node.each(function(d,i){
