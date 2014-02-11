@@ -10,11 +10,14 @@ var ip = "127.0.0.1";
 var getHandler = function(req, res){
   //add path handling!!!!
   var path = url.parse(req.url).path;
-
   if (path === '/'){
     path = '/public/index.html'
   }
-  serveStatic(res, path);
+  var isImage = false;
+  if (path.slice(-3) === 'ico' || path.slice(-3) === 'png' ){
+    isImage = true;
+  }
+  serveStatic(res, path, isImage);
 };
 
 var postHandler = function(req, res){
@@ -50,14 +53,22 @@ var defaultCorsHeaders = {
 var sendResponse = function(res, data, status){
   status = status || 200;
   res.writeHead(status, defaultCorsHeaders);
-  res.end(data);
+  res.end(data, 'binary');
 };
 
-var serveStatic = function(res, asset) {
-  fs.readFile('.' + asset, 'utf8', function(err, data){
+var serveStatic = function(res, asset, img) {
+  var encoding = 'utf8';
+  if (img){
+    encoding = 'binary';
+  }
+
+  fs.readFile('.' + asset, encoding, function(err, data){
     if (err){
       sendResponse(res, "404:File not found", 404);
     }else{
+      if (img){
+        res.setHeader("Content-Type", "image/jpeg");
+      }
       sendResponse(res, data);
     }
   });
