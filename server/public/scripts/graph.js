@@ -54,7 +54,7 @@ var h = window.innerHeight;
     {"name":"Brian Chu", "company":"UC Berkeley", "cohort":4, "isCompany":false},
     {"name":"Bianca Gandolfo", "company":"Hack Reactor", "cohort":4, "isCompany":false},
     {"name":"Brandon Salazar", "company":"Maxwell Rowe Creative Lab", "cohort":4, "isCompany":false},
-    {"name":"Elle Beal", "company":"NodePrime", "cohort":4, "isCompany":false},
+    {"name":"Elle Beal", "company":"Node Prime", "cohort":4, "isCompany":false},
     {"name":"Eric Levin", "company":"DocuSign", "cohort":4, "isCompany":false},
     {"name":"Greg Palmer", "company":"Konsu.lt", "cohort":4, "isCompany":false},
     {"name":"Patrick Stapleton", "company":"Keychain Logistics", "cohort":4, "isCompany":false},
@@ -64,7 +64,7 @@ var h = window.innerHeight;
     {"name":"Nick Miller", "company":"Radius Intelligence", "cohort":4, "isCompany":false},
     {"name":"Rohan Sathe", "company":"Voxer", "cohort":4, "isCompany":false},
     {"name":"Bill Shelton", "company":"Edmodo", "cohort":4, "isCompany":false},
-    {"name":"Evan Peele", "company":"coTap", "cohort":4, "isCompany":false},
+    {"name":"Evan Peele", "company":"coTap", "cohort":4, "isCompany":false}, // tbd
     {"name":"Walker Flynn", "company":"Evisors", "cohort":4, "isCompany":false},
     {"name":"Andrew Spade", "company":"Hack Reactor", "cohort":5, "isCompany":false},
     {"name":"Gregory Hilkert", "company":"Brandcast", "cohort":5, "isCompany":false},
@@ -78,16 +78,16 @@ var h = window.innerHeight;
     {"name":"Hao Liu", "company":"Brandcast", "cohort":5, "isCompany":false},
     {"name":"Joshua Pagano", "company":"Vertical Response", "cohort":5, "isCompany":false},
     {"name":"Josh Sprague", "company":"LessThan3", "cohort":5, "isCompany":false},
-    {"name":"Kyle Geppert", "company":"Summit Hill", "cohort":5, "isCompany":false},
+    {"name":"Kyle Geppert", "company":"Summit Hill", "cohort":5, "isCompany":false}, //??????????
     {"name":"Maxwell Malin", "company":"Livefyre", "cohort":5, "isCompany":false},
-    {"name":"Zak Zibrat", "company":"Rigetti Quantum Computing", "cohort":5, "isCompany":false},
+    {"name":"Zak Zibrat", "company":"Rigetti Quantum Computing", "cohort":5, "isCompany":false}, //??????????????????
     {"name":"Alessandro Zanardi", "company":"Good Karma", "cohort":5, "isCompany":false},
     {"name":"Phillip Alexander", "company":"Hack Reactor", "cohort":5, "isCompany":false},
     {"name":"Cyd La Luz", "company":"Schoolzilla", "cohort":5, "isCompany":false},
     {"name":"Ricky Sidhu", "company":"LinkedIn", "cohort":5, "isCompany":false},
     {"name":"Savannah Kunovsky", "company":"Hack Reactor", "cohort":5, "isCompany":false},
     {"name":"Shaohua Zhou", "company":"Versal", "cohort":5, "isCompany":false},
-    {"name":"Stephen Portanova", "company":"Lockit", "cohort":5, "isCompany":false},
+    {"name":"Stephen Portanova", "company":"Lockit", "cohort":5, "isCompany":false},//????????????????
     {"name":"Christopher Sita", "company":"VMWare", "cohort":5, "isCompany":false},
     {"name":"Tuhin Chakraborty", "company":"Pandora", "cohort":5, "isCompany":false},
     {"name":"Brett Hoyer", "company":"DeliRadio", "cohort":6, "isCompany":false},
@@ -99,7 +99,7 @@ var h = window.innerHeight;
     {"name":"David Gonzales", "company":"DeliRadio", "cohort":6, "isCompany":false},
     {"name":"Douglas Kong", "company":"NeuStar", "cohort":6, "isCompany":false},
     {"name":"Elie Kiwan", "company":"AdPerk", "cohort":6, "isCompany":false},
-    {"name":"Martin Henry-Castaneda", "company":"SolutionSets", "cohort":6, "isCompany":false},
+    {"name":"Martin Henry-Castaneda", "company":"SolutionSets", "cohort":6, "isCompany":false},//??????????????
     {"name":"Kristina Garfinkel", "company":"Versal", "cohort":6, "isCompany":false},
     {"name":"Kevin Moore", "company":"Hack Reactor", "cohort":6, "isCompany":false},
     {"name":"Lindsay Hertz", "company":"Desk.com", "cohort":6, "isCompany":false},
@@ -134,12 +134,13 @@ var h = window.innerHeight;
 
     for (var k in compList) {
       var temp = {};
+      var matched = k.replace(/\W/g, '');
       temp[k] = compList[k];
       temp["name"] = k;
       temp["company"] = null;
       temp["cohort"] = null;
       temp["isCompany"] = true;
-      temp["imgUrl"] = "public/images/"+ k.split(" ").join("") +".ico";
+      temp["imgUrl"] = "public/images/"+ matched +".ico";
       nodes.push(temp);
     }
 
@@ -185,9 +186,9 @@ var node = svg.selectAll(".node")
       .data(nodes)
     .enter().append("circle")
       .attr("class", "node")
-      .attr("r", 10)
-      .style("fill", function(d){return d.isCompany ? "red" : "white"})
-      .style("stroke", "blue")
+      .attr("r", function(d){return (d.name === "Hack Reactor") ? 10 : 10})
+      .style("fill", function(d){return d.isCompany ? "red" : "black"})
+      .style("stroke", function(d){return d.isCompany ? "none" : "white"})
       .call(force.drag); // enable to make draggable
 
 node.append("title")
@@ -196,36 +197,37 @@ node.append("title")
 node.each(function(d,i){
   if(d.imgUrl !== undefined){
     var noSpace = d.name.split(" ").join("");
+    var matched = d.name.replace(/\W/g, '');
 
     svg.append("pattern")
-      .attr("id", noSpace)
+      .attr("id", matched)
       .attr("x", "0")
       .attr("y","0")
       .attr("patternUnits", "objectBoundingBox")
       .attr("height","21px")
       .attr("width","21px");
 
-    svg.select("pattern#"+ noSpace).append("image")
+    svg.select("pattern#"+ matched).append("image")
       .attr("x","0")
       .attr("y","0")
-      .attr("height","21px")
-      .attr("width","21px")
+      .attr("height","16px")
+      .attr("width","16px")
       .attr("xlink:href", d.imgUrl);
 
     console.log(d.imgUrl);
 
-    d3.select(this).style("fill","url(#"+noSpace+")");
+    d3.select(this).style("fill","url(#"+matched+")");
   }
 });
 
 
 /*-------------------EVENT LISTENERS----------------------------*/
-node.on('mouseover', function(d,i){
-  d3.select(this).transition().attr("r", 40);
-});
-node.on('mouseout', function(d,i){
-  d3.select(this).transition().attr("r", 10);
-});
+// node.on('mouseover', function(d,i){
+//   d3.select(this).transition().attr("r", 40);
+// });
+// node.on('mouseout', function(d,i){
+//   d3.select(this).transition().attr("r", 10);
+// });
 
 /*-------------------FORCE POSITIONING--------------------------------*/
 force.on("tick", function() {

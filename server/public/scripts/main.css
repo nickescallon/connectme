@@ -1,5 +1,5 @@
 body {
-  background-color: #d3d3d3;
+  background-color: gray;
 }
 
 
@@ -9,6 +9,6 @@ body {
 }
 
 .link {
-  stroke: #999;
+  stroke: white;
   stroke-opacity: .6;
 }
