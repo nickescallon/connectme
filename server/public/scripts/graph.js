@@ -2,28 +2,6 @@ var w = window.innerWidth;
 var h = window.innerHeight;
 
 /*---------------TEST DATASET------------------*/
-    //SHOULD POPULATE BASED ON grads...
-    // var compList = {
-    //   "hack reactor": 0,
-    //   "seedchange": 1,
-    //   "McKinsey": 2,
-    //   "DocuSign": 3,
-    //   "Monsoon": 4,
-    //   "Architect": 5,
-    //   "LOYAL3": 6,
-    //   "Boatbound": 7,
-    //   "Thoughtworks": 8,
-    //   "salesforce": 9,
-    //   "HackBright": 10,
-    //   "Futura IO": 11,
-    //   "Toaster Ltd": 12,
-    //   "startups": 13,
-    //   "Macy's.com": 14,
-    //   "Adap.tv": 15,
-    //   "Live Lovely": 16,
-
-
-    //   }
 
     var grads = [{"name":"Albert Lee", "company":"seedchange", "cohort":1, "isCompany":false},
     {"name":"Mark Chatkhan", "company":"McKinsey", "cohort":1, "isCompany":false},
@@ -42,7 +20,7 @@ var h = window.innerHeight;
     {"name":"Tim Schiller", "company":"Futura IO", "cohort":1, "isCompany":false},
     {"name":"Howard Tang", "company":"Toaster Ltd", "cohort":2, "isCompany":false},
     {"name":"Coleman Foley", "company":"startups", "cohort":2, "isCompany":false},
-    {"name":"Tyler Briles", "company":"Macy's.com", "cohort":2, "isCompany":false},
+    {"name":"Tyler Briles", "company":"Macys.com", "cohort":2, "isCompany":false},
     {"name":"Andreas Nauleau", "company":"Adap.tv", "cohort":2, "isCompany":false},
     {"name":"Gavin McDermott", "company":"Live Lovely", "cohort":2, "isCompany":false},
     {"name":"John Katsnelson", "company":"Monsoon", "cohort":2, "isCompany":false},
@@ -58,7 +36,7 @@ var h = window.innerHeight;
     {"name":"Blake Embrey", "company":"Formidable Labs", "cohort":3, "isCompany":false},
     {"name":"Chad Reed", "company":"GlobeSherpa", "cohort":3, "isCompany":false},
     {"name":"Peter DeCroos", "company":"SmartShoot", "cohort":3, "isCompany":false},
-    {"name":"Tyson Daugherty", "company":"Yummy Corp", "cohort":3, "isCompany":false},
+    {"name":"Tyson Daugherty", "company":"Yummy Corp", "cohort":3, "isCompany":false}, //NO ICO
     {"name":"Jason Kang", "company":"thismoment", "cohort":3, "isCompany":false},
     {"name":"John Dvorak", "company":"Node Prime", "cohort":3, "isCompany":false},
     {"name":"Magee Mooney", "company":"Tog+Porter", "cohort":3, "isCompany":false},
@@ -78,9 +56,9 @@ var h = window.innerHeight;
     {"name":"Brandon Salazar", "company":"Maxwell Rowe Creative Lab", "cohort":4, "isCompany":false},
     {"name":"Elle Beal", "company":"NodePrime", "cohort":4, "isCompany":false},
     {"name":"Eric Levin", "company":"DocuSign", "cohort":4, "isCompany":false},
-    {"name":"Greg Palmer", "company":"Konsu.It", "cohort":4, "isCompany":false},
+    {"name":"Greg Palmer", "company":"Konsu.lt", "cohort":4, "isCompany":false},
     {"name":"Patrick Stapleton", "company":"Keychain Logistics", "cohort":4, "isCompany":false},
-    {"name":"Alex Gaputin", "company":"Backplane", "cohort":4, "isCompany":false},
+    {"name":"Alex Gaputin", "company":"Backplane", "cohort":4, "isCompany":false}, //NO IO
     {"name":"Jake Seip", "company":"Keychain Logistics", "cohort":4, "isCompany":false},
     {"name":"Kevin Smith", "company":"Backcountry.com", "cohort":4, "isCompany":false},
     {"name":"Nick Miller", "company":"Radius Intelligence", "cohort":4, "isCompany":false},
@@ -150,7 +128,7 @@ var h = window.innerHeight;
       }
 
     }
-    console.log(compList);
+    //console.log(compList);
     var nodes = [];
     var links = [];
 
@@ -161,8 +139,11 @@ var h = window.innerHeight;
       temp["company"] = null;
       temp["cohort"] = null;
       temp["isCompany"] = true;
+      temp["imgUrl"] = "public/images/"+ k.split(" ").join("") +".ico";
       nodes.push(temp);
     }
+
+    console.log(nodes);
 
     for (var i=0; i<grads.length; i++){
       nodes.push(grads[i]);
@@ -183,8 +164,8 @@ var h = window.innerHeight;
     /*----------------------------------------------------------------------------------*/
 
 var force = d3.layout.force()
-    .charge(-1000)
-    .linkDistance(50)
+    .charge(-300)
+    .linkDistance(30)
     .size([w, h])
     .nodes(nodes)
     .links(links)
@@ -205,13 +186,46 @@ var node = svg.selectAll(".node")
     .enter().append("circle")
       .attr("class", "node")
       .attr("r", 10)
-      //.style("fill", function(d) { return color(d.group); }) // somehow add face pictures here
-      .style("fill", 'white')
-      .style("stroke", 'blue')
+      .style("fill", function(d){return d.isCompany ? "red" : "white"})
+      .style("stroke", "blue")
       .call(force.drag); // enable to make draggable
 
 node.append("title")
       .text(function(d) { return d.name; });
+
+node.each(function(d,i){
+  if(d.imgUrl !== undefined){
+    var noSpace = d.name.split(" ").join("");
+
+    svg.append("pattern")
+      .attr("id", noSpace)
+      .attr("x", "0")
+      .attr("y","0")
+      .attr("patternUnits", "objectBoundingBox")
+      .attr("height","21px")
+      .attr("width","21px");
+
+    svg.select("pattern#"+ noSpace).append("image")
+      .attr("x","0")
+      .attr("y","0")
+      .attr("height","21px")
+      .attr("width","21px")
+      .attr("xlink:href", d.imgUrl);
+
+    console.log(d.imgUrl);
+
+    d3.select(this).style("fill","url(#"+noSpace+")");
+  }
+});
+
+
+/*-------------------EVENT LISTENERS----------------------------*/
+node.on('mouseover', function(d,i){
+  d3.select(this).transition().attr("r", 40);
+});
+node.on('mouseout', function(d,i){
+  d3.select(this).transition().attr("r", 10);
+});
 
 /*-------------------FORCE POSITIONING--------------------------------*/
 force.on("tick", function() {
@@ -223,3 +237,8 @@ force.on("tick", function() {
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
 });
+
+
+
+
+
