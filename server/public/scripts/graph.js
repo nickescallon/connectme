@@ -186,7 +186,7 @@ var node = svg.selectAll(".node")
       .data(nodes)
     .enter().append("circle")
       .attr("class", "node")
-      .attr("r", function(d){return (d.name === "Hack Reactor") ? 10 : 10})
+      .attr("r", function(d){return d.isCompany ? 8 : 8})
       .style("fill", function(d){return d.isCompany ? "red" : "black"})
       .style("stroke", function(d){return d.isCompany ? "none" : "white"})
       .call(force.drag); // enable to make draggable
