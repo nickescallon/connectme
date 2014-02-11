@@ -8,7 +8,7 @@ var ip = "127.0.0.1";
 
 /*---------SPLIT OUT TO DIFFERENT FILE---------------------*/
 var getHandler = function(req, res){
-  //add path handling!!!!
+  
   var path = url.parse(req.url).path;
   if (path === '/'){
     path = '/public/index.html'
