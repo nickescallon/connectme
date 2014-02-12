@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp">
   <head>
     <title>connectMe</title>
     <link rel="stylesheet" href="public/scripts/main.css">
     <script src="lib/d3.min.js"></script>
     <script src="lib/d3.tip.js"></script>
+    <script src="/lib/angular.js"></script>
+    <script src="public/scripts/app.js"></script>
   </head>
   <body>
-    <div id="nav">
-      <form id="search">
-        <input id="input" type="text" placeholder="Search...">
-      </form>
+    <div id="nav" ng-controller='FrameController'>
+      <input id="search" ng-model="inputTxt" ng-change="highlight(inputTxt)" type="text">
     </div>
     <div id="vizContainer"></div>
     <script src="public/scripts/graph.js"></script>
